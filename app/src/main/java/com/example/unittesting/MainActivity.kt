@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -44,31 +45,41 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Testing() {
 
-    Column(modifier = Modifier
-        .fillMaxSize(),
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         val context = LocalContext.current
 
-        var firstName by  remember { mutableStateOf ("")}
+        var firstName by remember { mutableStateOf("") }
         var lastName by remember { mutableStateOf("") }
         var isPasswordValid by remember { mutableStateOf(false) }
-        var password by remember { mutableStateOf("")}
+        var password by remember { mutableStateOf("") }
 
         Text(text = "$firstName $lastName", fontSize = 20.sp)
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        OutlinedTextField(value = firstName, onValueChange = { firstName = it}, modifier = Modifier.testTag("firstName_tag"), label = {
-            Text(text = "First Name")
-        } )
+        OutlinedTextField(
+            value = firstName,
+            onValueChange = { firstName = it },
+            modifier = Modifier.testTag("firstName_tag"),
+            label = {
+                Text(text = "First Name")
+            })
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        OutlinedTextField(value = lastName, onValueChange = { lastName = it } ,modifier = Modifier.testTag("lastName_tag"), label = {
-            Text(text = "Last Name")
-        })
+        OutlinedTextField(
+            value = lastName,
+            onValueChange = { lastName = it },
+            modifier = Modifier.testTag("lastName_tag"),
+            label = {
+                Text(text = "Last Name")
+            })
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -76,16 +87,18 @@ fun Testing() {
             password = password,
             onPasswordChange = { password = it },
             onPasswordValidated = { isValid ->
-            isPasswordValid = isValid
-        })
+                isPasswordValid = isValid
+            })
 
         Spacer(modifier = Modifier.height(25.dp))
 
-        Button(onClick = {
-            Toast.makeText(context, "$firstName $lastName",Toast.LENGTH_SHORT).show()
-            validatePassword(password)
-        }) {
-            Text(text = "Click",fontSize = 20.sp)
+        Button(
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Yellow),
+            onClick = {
+                Toast.makeText(context, "$firstName $lastName", Toast.LENGTH_SHORT).show()
+                validatePassword(password)
+            }) {
+            Text(text = "Click", fontSize = 20.sp)
         }
     }
 
@@ -128,22 +141,30 @@ private fun validatePassword(passwordText: String): Boolean {
     return if (passwordText.isEmpty()) {
         false
     } else {
-        PasswordValidator.isValidPassword(passwordText)
+        Validator.isValidPassword(passwordText)
     }
 }
 
-object PasswordValidator {
-    fun isValidPassword(password:String): Boolean {
-        val regexPattern = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+\$).{8,}\$")
+object Validator {
+
+    fun isValidPassword(password: String): Boolean {
+        val regexPattern =
+            Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+\$).{8,}\$")
         val noInitialSpaces = !password.startsWith(" ")
         val isEmpty = password.isNotEmpty()
         return regexPattern.matches(password) && noInitialSpaces && isEmpty
     }
+
+    fun isValidInput(input: String): Boolean {
+        val pattern = Regex("^(?=.*[a-z])(?=.*[A-Z])")
+        val initialSpaces = !input.startsWith(" ")
+        val isEmpty = input.isNotEmpty()
+        return pattern.matches(input) && initialSpaces && isEmpty
+    }
 }
 
-
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun GreetingPreview() {
+fun Preview() {
     Testing()
 }
