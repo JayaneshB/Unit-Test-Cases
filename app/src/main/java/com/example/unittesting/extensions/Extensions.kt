@@ -17,13 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import com.example.unittesting.enumeration.ButtonState
+import com.example.unittesting.enumeration.State
 
 
 fun Modifier.pulsateClick() = composed {
-    var buttonState by  remember { mutableStateOf( ButtonState.Idle) }
+    var buttonState by  remember { mutableStateOf( State.Idle) }
     //Animate the  state
-    val scale by animateFloatAsState(targetValue = if(buttonState == ButtonState.Pressed) 0.5f else 1f)
+    val scale by animateFloatAsState(targetValue = if(buttonState == State.Pressed) 0.5f else 1f)
     this
         .graphicsLayer {
             scaleX = scale
@@ -31,12 +31,12 @@ fun Modifier.pulsateClick() = composed {
         }
         .pointerInput(buttonState) {
             awaitPointerEventScope {
-                buttonState = if (buttonState == ButtonState.Pressed) {
+                buttonState = if (buttonState == State.Pressed) {
                     waitForUpOrCancellation()
-                    ButtonState.Idle
+                    State.Idle
                 } else {
                     awaitFirstDown()
-                    ButtonState.Pressed
+                    State.Pressed
                 }
             }
         }
@@ -48,10 +48,10 @@ fun Modifier.pulsateClick() = composed {
 fun Modifier.pressClick() = composed {
 
     var buttonState by remember {
-        mutableStateOf(ButtonState.Idle)
+        mutableStateOf(State.Idle)
     }
 
-    val scale by animateFloatAsState(targetValue = if(buttonState == ButtonState.Pressed) 0f else -20f)
+    val scale by animateFloatAsState(targetValue = if(buttonState == State.Pressed) 0f else -20f)
 
     this
         .graphicsLayer {
@@ -62,12 +62,12 @@ fun Modifier.pressClick() = composed {
             interactionSource = remember { MutableInteractionSource() }) { }
         .pointerInput(buttonState) {
             awaitPointerEventScope {
-                buttonState = if (buttonState == ButtonState.Pressed) {
+                buttonState = if (buttonState == State.Pressed) {
                     waitForUpOrCancellation()
-                    ButtonState.Idle
+                    State.Idle
                 } else {
                     awaitFirstDown(false)
-                    ButtonState.Pressed
+                    State.Pressed
                 }
             }
         }
@@ -78,10 +78,10 @@ fun Modifier.pressClick() = composed {
 
 fun Modifier.shakeEffect() = composed {
 
-    var state by remember { mutableStateOf(ButtonState.Idle) }
+    var state by remember { mutableStateOf(State.Idle) }
 
     val trans by animateFloatAsState(
-        targetValue = if(state == ButtonState.Pressed) 0f else -50f,
+        targetValue = if(state == State.Pressed) 0f else -50f,
         animationSpec = repeatable(
             iterations = 3,
             animation = tween(durationMillis = 50, easing = LinearEasing),
@@ -95,12 +95,12 @@ fun Modifier.shakeEffect() = composed {
         }
         .pointerInput(state) {
             awaitPointerEventScope {
-                state = if (state == ButtonState.Pressed) {
+                state = if (state == State.Pressed) {
                     waitForUpOrCancellation()
-                    ButtonState.Idle
+                    State.Idle
                 } else {
                     awaitFirstDown(false)
-                    ButtonState.Pressed
+                    State.Pressed
                 }
             }
         }

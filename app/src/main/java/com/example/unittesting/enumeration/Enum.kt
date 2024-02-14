@@ -1,6 +1,6 @@
 package com.example.unittesting.enumeration
 
-enum class ButtonState {
+enum class State {
     Pressed,
     Idle
 }
