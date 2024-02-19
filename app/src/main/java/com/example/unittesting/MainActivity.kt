@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.unittesting.enumeration.ButtonState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +59,12 @@ fun Testing() {
         var lastName by remember { mutableStateOf("") }
         var isPasswordValid by remember { mutableStateOf(false) }
         var password by remember { mutableStateOf("") }
+
+
+        var showLoader by remember {
+            mutableStateOf(ButtonState.Idle)
+        }
+
 
         Text(text = "$firstName $lastName", fontSize = 20.sp)
 
@@ -100,6 +107,15 @@ fun Testing() {
             }) {
             Text(text = "Click", fontSize = 20.sp)
         }
+
+        Spacer(modifier = Modifier.height(25.dp))
+
+        ComposeCustomButton(
+            onClick = { showLoader = ButtonState.Failure},
+            buttonState = showLoader,
+            width = 250.dp,
+            height = 60.dp,
+            buttonText ="Continue")
     }
 
 }
@@ -162,6 +178,12 @@ object Validator {
         return pattern.matches(input) && initialSpaces && isEmpty
     }
 }
+
+sealed class Result {
+    data class ShowLoader(var isLoading:ButtonState) : Result()
+}
+
+
 
 @Preview
 @Composable
